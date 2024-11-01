@@ -52,9 +52,12 @@ function Login() {
         />
       </div>
 
-      <div className="d-grid">
+      <div className="d-flex justify-content-between">
+        <button type="submit" className="btn btn-primary ma-3">
+          Login as Patient
+        </button>
         <button type="submit" className="btn btn-primary">
-          Submit
+          Login as Pysiotherapist
         </button>
       </div>
       <p className="forgot-password text-right">

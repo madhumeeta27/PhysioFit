@@ -9,7 +9,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
-
+  const [utype, setUType] = useState("");
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -21,7 +21,8 @@ function Register() {
           email: user.email,
           firstName: fname,
           lastName: lname,
-          photo:""
+          photo:"",
+          usertype: utype 
         });
       }
       console.log("User Registered Successfully!!");
@@ -60,6 +61,32 @@ function Register() {
           onChange={(e) => setLname(e.target.value)}
         />
       </div>
+
+      <div className="mb-3">
+          <label>User Type</label>
+          <div>
+            <input
+              type="radio"
+              name="userType"
+              id="physiotherapist"
+              value="Physiotherapist"
+              className="form-check-input" // Use 'form-check-input' for Bootstrap styling
+              onChange={(e) => setUType(e.target.value)}
+            />
+            <label htmlFor="physiotherapist" className="form-check-label" style={{ fontWeight: 'normal'}}>Physiotherapist</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="userType"
+              id="patient" // Add an ID for the Patient radio button
+              value="Patient"
+              className="form-check-input" // Use 'form-check-input' for Bootstrap styling
+              onChange={(e) => setUType(e.target.value)}
+            />
+            <label htmlFor="patient" className="form-check-label" style={{ fontWeight: 'normal' }}>Patient</label>
+          </div>
+        </div>
 
       <div className="mb-3">
         <label>Email address</label>
