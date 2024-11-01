@@ -2,7 +2,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "./firebase";
 import { toast } from "react-toastify";
-import SignInwithGoogle from "./signInWIthGoogle";
+
+import './login.css';
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,8 +28,12 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Login</h3>
+    
+    
+    <form onSubmit={handleSubmit} className="login-form">
+      
+      <h3 div className="welcome">Welcome Back</h3>
+      
 
       <div className="mb-3">
         <label>Email address</label>
@@ -52,18 +57,19 @@ function Login() {
         />
       </div>
 
-      <div className="d-flex justify-content-between">
-        <button type="submit" className="btn btn-primary ma-3">
+      <div className="d-flex justify-content-between" >
+        <button type="submit"  >
           Login as Patient
         </button>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" >
           Login as Pysiotherapist
         </button>
       </div>
+      
       <p className="forgot-password text-right">
-        New user <a href="/register">Register Here</a>
+        New user <a href="/register" color="rebeccared">Register Here</a>
       </p>
-      <SignInwithGoogle/>
+      
     </form>
   );
 }

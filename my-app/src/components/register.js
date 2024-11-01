@@ -119,7 +119,7 @@ function Register() {
       </div>
 
       <div className="d-grid">
-        <button type="submit" className="btn btn-primary">
+        <button type="submit">
           Sign Up
         </button>
       </div>
