@@ -9,21 +9,27 @@ function Register() {
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
-
+  const [utype, setUType] = useState("");
+  
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user; // Get user info from userCredential
       console.log(user);
+      
       if (user) {
+        // Set user details in Firestore
         await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
           firstName: fname,
           lastName: lname,
-          photo:""
+          photo: "",
+          usertype: utype,
+          createdAt: new Date(), // Optional: Add a timestamp
         });
       }
+      
       console.log("User Registered Successfully!!");
       toast.success("User Registered Successfully!!", {
         position: "top-center",
@@ -58,8 +64,37 @@ function Register() {
           className="form-control"
           placeholder="Last name"
           onChange={(e) => setLname(e.target.value)}
+          required // Added required for last name
         />
       </div>
+
+      <div className="mb-3">
+          <label>User Type</label>
+          <div>
+            <input
+              type="radio"
+              name="userType"
+              id="physiotherapist"
+              value="Physiotherapist"
+              className="form-check-input" // Use 'form-check-input' for Bootstrap styling
+              onChange={(e) => setUType(e.target.value)}
+              required // Ensure user type is selected
+            />
+            <label htmlFor="physiotherapist" className="form-check-label" style={{ fontWeight: 'normal'}}>Physiotherapist</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="userType"
+              id="patient" // Add an ID for the Patient radio button
+              value="Patient"
+              className="form-check-input" // Use 'form-check-input' for Bootstrap styling
+              onChange={(e) => setUType(e.target.value)}
+              required // Ensure user type is selected
+            />
+            <label htmlFor="patient" style={{ fontWeight: 'normal' }}>Patient</label>
+          </div>
+        </div>
 
       <div className="mb-3">
         <label>Email address</label>
@@ -84,7 +119,7 @@ function Register() {
       </div>
 
       <div className="d-grid">
-        <button type="submit" className="btn btn-primary">
+        <button type="submit">
           Sign Up
         </button>
       </div>
@@ -94,4 +129,5 @@ function Register() {
     </form>
   );
 }
+
 export default Register;
