@@ -10,21 +10,26 @@ function Register() {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [utype, setUType] = useState("");
+  
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user; // Get user info from userCredential
       console.log(user);
+      
       if (user) {
+        // Set user details in Firestore
         await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
           firstName: fname,
           lastName: lname,
-          photo:"",
-          usertype: utype 
+          photo: "",
+          usertype: utype,
+          createdAt: new Date(), // Optional: Add a timestamp
         });
       }
+      
       console.log("User Registered Successfully!!");
       toast.success("User Registered Successfully!!", {
         position: "top-center",
@@ -59,6 +64,7 @@ function Register() {
           className="form-control"
           placeholder="Last name"
           onChange={(e) => setLname(e.target.value)}
+          required // Added required for last name
         />
       </div>
 
@@ -72,6 +78,7 @@ function Register() {
               value="Physiotherapist"
               className="form-check-input" // Use 'form-check-input' for Bootstrap styling
               onChange={(e) => setUType(e.target.value)}
+              required // Ensure user type is selected
             />
             <label htmlFor="physiotherapist" className="form-check-label" style={{ fontWeight: 'normal'}}>Physiotherapist</label>
           </div>
@@ -83,8 +90,9 @@ function Register() {
               value="Patient"
               className="form-check-input" // Use 'form-check-input' for Bootstrap styling
               onChange={(e) => setUType(e.target.value)}
+              required // Ensure user type is selected
             />
-            <label htmlFor="patient" className="form-check-label" style={{ fontWeight: 'normal' }}>Patient</label>
+            <label htmlFor="patient" style={{ fontWeight: 'normal' }}>Patient</label>
           </div>
         </div>
 
@@ -121,4 +129,5 @@ function Register() {
     </form>
   );
 }
+
 export default Register;
