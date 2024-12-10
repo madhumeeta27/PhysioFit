@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import {
@@ -10,20 +10,30 @@ import {
 
 import Login from "./components/login";
 import SignUp from "./components/register";
-
+import Physiotherapist from "./components/physiotherapist";
+import Patient from "./components/patient";
+import Profile from "./components/profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Profile from "./components/profile";
-import { useState } from "react";
 import { auth } from "./components/firebase";
 
 function App() {
   const [user, setUser] = useState();
+  
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       setUser(user);
     });
-  });
+  }, []);
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      setUser(null); // Clear user state
+    }).catch((error) => {
+      console.error("Logout error:", error);
+    });
+  };
+
   return (
     <Router>
       <div className="App">
@@ -37,6 +47,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/physiotherapist" element={user ? <Physiotherapist /> : <Navigate to="/login" />} />
+              <Route path="/patient" element={user ? <Patient /> : <Navigate to="/login" />} />
             </Routes>
             <ToastContainer />
           </div>
