@@ -7,10 +7,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import Login from "./components/login";
+import Login from "./components/login/login";
 import SignUp from "./components/register";
-import Physiotherapist from "./components/physiotherapist";
+import Physio from "./components/physio/physio";
 import Patient from "./components/patient";
 import Profile from "./components/profile";
 import { ToastContainer } from "react-toastify";
@@ -19,40 +22,87 @@ import { auth } from "./components/firebase";
 
 function App() {
   const [user, setUser] = useState();
-  
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       setUser(user);
     });
   }, []);
 
+  useEffect(() => {
+    // Clear authentication state on app load
+    auth
+      .signOut()
+      .then(() => {
+        setUser(null); // Ensure no user is logged in
+      })
+      .catch((error) => {
+        console.error("Error clearing authentication state:", error);
+      });
+  }, []);
+
   const handleLogout = () => {
-    auth.signOut().then(() => {
-      setUser(null); // Clear user state
-    }).catch((error) => {
-      console.error("Logout error:", error);
-    });
+    auth
+      .signOut()
+      .then(() => {
+        setUser(null); // Clear user state
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+      });
   };
 
   return (
     <Router>
       <div className="App">
-        <div className="auth-wrapper">
-          <div className="auth-inner">
-            <Routes>
-              <Route
-                path="/"
-                element={user ? <Navigate to="/profile" /> : <Login />}
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<SignUp />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/physiotherapist" element={user ? <Physiotherapist /> : <Navigate to="/login" />} />
-              <Route path="/patient" element={user ? <Patient /> : <Navigate to="/login" />} />
-            </Routes>
-            <ToastContainer />
-          </div>
-        </div>
+        <Routes>
+          {/* Public Routes */}
+          <Route
+            path="/"
+            element={
+              <div className="auth-wrapper">
+                <div className="auth-inner">
+                  <Login />
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <div className="auth-wrapper">
+                <div className="auth-inner">
+                  <Login />
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <div className="auth-wrapper">
+                <div className="auth-inner">
+                  <SignUp />
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/profile"
+            element={<Profile />}
+          />
+
+          {/* Protected Routes */}
+          <Route
+            path="/physiotherapist"
+            element={user ? <Physio /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/patient"
+            element={user ? <Patient /> : <Navigate to="/login" />}
+          />
+        </Routes>
+        <ToastContainer />
       </div>
     </Router>
   );
