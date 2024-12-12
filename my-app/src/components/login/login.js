@@ -1,10 +1,10 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { auth } from "../firebase"; // Assuming this file is correct
+import { auth } from "../firebase"; 
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // For navigation
-import { getDoc, doc } from "firebase/firestore"; // Correct import for Firestore methods
-import { db } from "../firebase"; // Make sure this imports Firestore correctly
+import { useNavigate } from "react-router-dom"; 
+import { getDoc, doc } from "firebase/firestore"; 
+import { db } from "../firebase"; 
 
 import './login.css';
 
@@ -33,8 +33,8 @@ function Login() {
         toast.success("Physiotherapist logged in successfully.", { position: "top-center" });
 
       const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
-      const hospitalName = userDocSnap.data().clinic; // Assuming the field is 'hospitalName'
-      const hospitalAddress = userDocSnap.data().hospitalAddress; // Assuming the field is 'hospitalAddress'
+      const hospitalName = userDocSnap.data().clinic; 
+      const hospitalAddress = userDocSnap.data().hospitalAddress; 
 
       // Save doctor's details in session storage
       sessionStorage.setItem("physioName", physioName);

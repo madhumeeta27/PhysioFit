@@ -7,6 +7,8 @@ import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+
+
 const Physio = () => {
   const navigate = useNavigate();
   const [doctorDetails, setDoctorDetails] = useState({
@@ -95,7 +97,8 @@ const Physio = () => {
       });
   };
 
-  return (
+
+return (
     <div>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
@@ -177,13 +180,13 @@ const Physio = () => {
             <div className="divider-custom-line"></div>
           </div>
           <p className="pre-wrap masthead-subheading font-weight-light mb-0">
-            PHYSIO-THERAPIST, {doctorDetails.hospital}
+            Physio Therapist, {doctorDetails.hospital}
           </p>
         </div>
       </header>
 
       {/* Patients Section */}
-      <section className="page-section portfolio" id="portfolio" style={{backgroundColor:"#2c3e50 !important", color:"#ffffff !important"}}>
+      <section className="page-section portfolio" id="portfolio" style={{ backgroundColor: "#2c3e50", color: "#ffffff", backgroundColor: "#2c3e50 !important", color: "#ffffff !important" }}>
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading text-secondary mb-0 d-inline-block">
