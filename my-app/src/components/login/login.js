@@ -32,10 +32,14 @@ function Login() {
       if (userRole === "Physiotherapist") {
         toast.success("Physiotherapist logged in successfully.", { position: "top-center" });
 
-        const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
+      const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
+      const hospitalName = userDocSnap.data().clinic; // Assuming the field is 'hospitalName'
+      const hospitalAddress = userDocSnap.data().hospitalAddress; // Assuming the field is 'hospitalAddress'
 
-        // Save doctor's name in session storage
-        sessionStorage.setItem("physioName", physioName);
+      // Save doctor's details in session storage
+      sessionStorage.setItem("physioName", physioName);
+      sessionStorage.setItem("hospitalName", hospitalName);
+      sessionStorage.setItem("hospitalAddress", hospitalAddress);
 
         // Redirect to the Physio React component
         navigate("/physiotherapist");

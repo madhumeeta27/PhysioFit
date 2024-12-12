@@ -1,17 +1,37 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/body.css";
 import "./styles/heading.css";
 import "./styles/styles.css";
-import avatar from "./assets/img/avatar.svg"
-import person from "./assets/img/person.png"
+import avatar from "./assets/img/avatar.svg";
+import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-
 const Physio = () => {
   const navigate = useNavigate();
+  const [doctorDetails, setDoctorDetails] = useState({
+    name: "Loading...",
+    hospital: "Loading...",
+    address: "Loading...",
+  });
 
   useEffect(() => {
+    // Retrieve doctor's details from sessionStorage
+    const physioName = sessionStorage.getItem("physioName");
+    const hospitalName = sessionStorage.getItem("hospitalName");
+    const hospitalAddress = sessionStorage.getItem("hospitalAddress");
+
+    if (physioName && hospitalName && hospitalAddress) {
+      setDoctorDetails({
+        name: physioName,
+        hospital: hospitalName,
+        address: hospitalAddress,
+      });
+    } else {
+      // If data is not found, redirect to login page
+      navigate("/login");
+    }
+
     // jQuery Smooth Scrolling
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
       if (
@@ -57,15 +77,17 @@ const Physio = () => {
 
     // Add class to body for specific styles
     document.body.className = "physio-body";
+    
     return () => {
       document.body.className = ""; // Clean up on component unmount
     };
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     auth
       .signOut()
       .then(() => {
+        sessionStorage.clear(); // Clear sessionStorage on logout
         navigate("/login");
       })
       .catch((error) => {
@@ -145,7 +167,7 @@ const Physio = () => {
             id="doctor-name"
             style={{ fontSize: "3.5rem" }}
           >
-            WELCOME, DOCTOR
+            WELCOME, {doctorDetails.name}
           </h1>
           <div className="divider-custom divider-light">
             <div className="divider-custom-line"></div>
@@ -155,13 +177,13 @@ const Physio = () => {
             <div className="divider-custom-line"></div>
           </div>
           <p className="pre-wrap masthead-subheading font-weight-light mb-0">
-            PHYSIO-THERAPIST, XYZ HOSPITAL
+            PHYSIO-THERAPIST, {doctorDetails.hospital}
           </p>
         </div>
       </header>
 
       {/* Patients Section */}
-      <section className="page-section portfolio" id="portfolio" style={{backgroundColor:"#2c3e50 !important"}}>
+      <section className="page-section portfolio" id="portfolio" style={{backgroundColor:"#2c3e50 !important", color:"#ffffff !important"}}>
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading text-secondary mb-0 d-inline-block">
