@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import "./styles/body.css";
 import "./styles/heading.css";
 import "./styles/styles.css";
+import avatar from "./assets/img/avatar.svg"
+import person from "./assets/img/person.png"
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -134,7 +136,7 @@ const Physio = () => {
         <div className="d-flex align-items-center flex-column">
           <img
             className="masthead-avatar mb-5"
-            src="assets/img/avataaars.svg"
+            src={avatar}
             alt="Avatar"
             style={{ width: "200px" }}
           />
@@ -159,7 +161,7 @@ const Physio = () => {
       </header>
 
       {/* Patients Section */}
-      <section className="page-section portfolio" id="portfolio">
+      <section className="page-section portfolio" id="portfolio" style={{backgroundColor:"#2c3e50 !important"}}>
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading text-secondary mb-0 d-inline-block">
@@ -180,7 +182,7 @@ const Physio = () => {
                   <div className="portfolio-item mx-auto">
                     <img
                       className="img-fluid"
-                      src="assets/img/person.png"
+                      src={person}
                       alt={patient}
                     />
                     <h5 className="text-center mt-3">{patient}</h5>
