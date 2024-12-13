@@ -89,3 +89,8 @@ html,
     margin-top: 1rem;
     text-align: center;
 }
+
+/* Global styles */
+.page-section.portfolio {
+  background-color: #ffffff;  /* Global styles */ 
+}

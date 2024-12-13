@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "./firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ function Register() {
   const [hospitalAddress, setHospitalAddress] = useState("");
   const [therapists, setTherapists] = useState([]);
   const [selectedTherapist, setSelectedTherapist] = useState("");
+  const navigate = useNavigate();
 
   // Fetch physiotherapists from Firestore
   useEffect(() => {
@@ -27,11 +29,11 @@ function Register() {
       }));
       setTherapists(therapistList);
     };
-
+    
     fetchTherapists();
   }, []);
-
-  const handleRegister = async (e) => {
+  
+    const handleRegister = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -59,6 +61,8 @@ function Register() {
       toast.success("User Registered Successfully!!", {
         position: "top-center",
       });
+      
+      navigate("/login");
     } catch (error) {
       console.error(error.message);
       toast.error(error.message, {
@@ -207,6 +211,7 @@ function Register() {
         Already registered <a href="/login">Login</a>
       </p>
     </form>
+
   );
 }
 

@@ -1,0 +1,27 @@
+{
+  "extends": [
+    "development"
+  ],
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not and_chr <= 131",
+    "not chrome <= 131",
+    "not edge <= 131",
+    "not firefox <= 132",
+    "not safari <= 18.1",
+    "not samsung <= 27"
+  ],
+  "hints": {
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "-webkit-overflow-scrolling",
+          "orphans",
+          "widows"
+        ]
+      }
+    ]
+  }
+}
