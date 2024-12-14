@@ -28,25 +28,43 @@ function Login() {
 
       const userRole = userDocSnap.data().usertype;
 
-      // Check the type of user and redirect
       if (userRole === "Physiotherapist") {
+        const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
+        const hospitalName = userDocSnap.data().clinic; 
+        const hospitalAddress = userDocSnap.data().hospitalAddress;
+        const emailID = userDocSnap.data().email;
+        const contactNo = userDocSnap.data().contact;
+
+        sessionStorage.setItem("physioName", physioName);
+        sessionStorage.setItem("hospitalName", hospitalName);
+        sessionStorage.setItem("hospitalAddress", hospitalAddress);
+        sessionStorage.setItem("emailID", emailID);
+        sessionStorage.setItem("contactNo", contactNo);
+
         toast.success("Physiotherapist logged in successfully.", { position: "top-center" });
-
-      const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
-      const hospitalName = userDocSnap.data().clinic; 
-      const hospitalAddress = userDocSnap.data().hospitalAddress; 
-
-      // Save doctor's details in session storage
-      sessionStorage.setItem("physioName", physioName);
-      sessionStorage.setItem("hospitalName", hospitalName);
-      sessionStorage.setItem("hospitalAddress", hospitalAddress);
-
-        // Redirect to the Physio React component
         navigate("/physiotherapist");
       } else if (userRole === "Patient") {
+        const patientName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
+        const assignedTherapist = userDocSnap.data().assignedTherapist;
+        const emailID = userDocSnap.data().email;
+        const contactNo = userDocSnap.data().contact;
+
+        sessionStorage.setItem("patientName", patientName);
+        sessionStorage.setItem("assignedTherapist", assignedTherapist);
+        sessionStorage.setItem("emailID", emailID);
+        sessionStorage.setItem("contactNo", contactNo);
+        console.log({
+          assignedTherapist,
+          contactNo,
+          emailID,
+          patientName
+        });
+
         toast.success("Patient logged in successfully.", { position: "top-center" });
-        navigate("/patient"); // Navigate to Patient Dashboard React route
-      } else {
+        navigate("/patient");
+        
+
+      } else {                                                        
         toast.error("Invalid user type.", { position: "bottom-center" });
       }
     } catch (error) {
@@ -55,7 +73,7 @@ function Login() {
   };
 
   return (
-    <div classname="login-page">
+    <div className="login-page">
       <form onSubmit={(e) => e.preventDefault()} className="login-form">
         <h3 className="welcome">Welcome Back</h3>
 
@@ -84,7 +102,7 @@ function Login() {
         <div className="d-flex justify-content-between">
           <button 
             type="button" 
-            onClick={handleLogin} // Handle login as either Physio or Patient
+            onClick={handleLogin}
             className="btn btn-primary"
           >
             Login
@@ -92,7 +110,7 @@ function Login() {
         </div>
 
         <p className="forgot-password text-right">
-          New user <a href="/register">Register Here</a>
+          New user? <a href="/register">Register Here</a>
         </p>
       </form>
     </div>

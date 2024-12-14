@@ -3,36 +3,74 @@ import "./styles/body.css";
 import "./styles/heading.css";
 import "./styles/styles.css";
 import avatar from "./assets/img/avatar.svg";
-import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-
-const Physio = () => {
+const Patient = () => {
   const navigate = useNavigate();
-  const [doctorDetails, setDoctorDetails] = useState({
+  const [patientDetails, setPatientDetails] = useState({
+    firstName: "Loading...",
+    lastName: "Loading...",
+    assignedTherapist: "Loading...",
+    contact: "Loading...",
+    email: "Loading...",
+  });
+  const [therapistDetails, setTherapistDetails] = useState({
     name: "Loading...",
-    hospital: "Loading...",
-    address: "Loading...",
+    contact: "Loading...",
+    email: "Loading...",
   });
 
   useEffect(() => {
-    // Retrieve doctor's details from sessionStorage
-    const physioName = sessionStorage.getItem("physioName");
-    const hospitalName = sessionStorage.getItem("hospitalName");
-    const hospitalAddress = sessionStorage.getItem("hospitalAddress");
+    // Retrieve patient details from sessionStorage
+    const assignedTherapist = sessionStorage.getItem("assignedTherapist");
+    const contactNo = sessionStorage.getItem("contactNo");
+    const emailID = sessionStorage.getItem("emailID");
+    const patientName = sessionStorage.getItem("patientName");
 
-    if (physioName && hospitalName && hospitalAddress) {
-      setDoctorDetails({
-        name: physioName,
-        hospital: hospitalName,
-        address: hospitalAddress,
+    if (assignedTherapist && contactNo && emailID && patientName) {
+      setPatientDetails({
+        assignedTherapist,
+        contact: contactNo,
+        email: emailID,
+        name: patientName,
       });
     } else {
       // If data is not found, redirect to login page
       navigate("/login");
     }
+// Fetch therapist details based on assignedTherapist ID
+fetch(`/api/therapists/${assignedTherapist}`) // Adjust the API endpoint according to your backend setup
+  .then((response) => {
+    if (!response.ok) {
+      // If the response status is not OK, throw an error
+      throw new Error('Failed to fetch therapist details');
+    }
+
+    // Check the content type of the response
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error('Response is not in JSON format');
+    }
+
+    // Parse JSON if the content type is application/json
+    return response.json();
+  })
+  .then((data) => {
+    setTherapistDetails({
+      name: data.name,
+      contact: data.contact,
+      email: data.email,
+    });
+  })
+  .catch((error) => {
+    console.error("Error fetching therapist details:", error.message);
+    // Optionally, display a user-friendly error message
+  });
+
+
+
 
     // jQuery Smooth Scrolling
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
@@ -78,8 +116,8 @@ const Physio = () => {
     });
 
     // Add class to body for specific styles
-    document.body.className = "physio-body";
-    
+    document.body.className = "patient-body";
+
     return () => {
       document.body.className = ""; // Clean up on component unmount
     };
@@ -97,8 +135,7 @@ const Physio = () => {
       });
   };
 
-
-return (
+  return (
     <div>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
@@ -124,15 +161,23 @@ return (
                   className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
                   href="#portfolio"
                 >
-                  PATIENTS
+                  Dashboard
                 </a>
               </li>
               <li className="nav-item mx-0 mx-lg-1">
                 <a
                   className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#about"
+                  href="#dashboard"
                 >
-                  SCHEDULE
+                  Start Exercise
+                </a>
+              </li>
+              <li className="nav-item mx-0 mx-lg-1">
+                <a
+                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+                  href="#physiotherapist"
+                >
+                  Physiotherapist
                 </a>
               </li>
               <li className="nav-item mx-0 mx-lg-1">
@@ -140,7 +185,7 @@ return (
                   className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
                   href="#contact"
                 >
-                  CONTACT
+                  Contact
                 </a>
               </li>
               <li className="nav-item mx-0 mx-lg-1">
@@ -170,7 +215,7 @@ return (
             id="doctor-name"
             style={{ fontSize: "3.5rem" }}
           >
-            WELCOME, {doctorDetails.name}
+            WELCOME, {patientDetails.name}
           </h1>
           <div className="divider-custom divider-light">
             <div className="divider-custom-line"></div>
@@ -179,18 +224,15 @@ return (
             </div>
             <div className="divider-custom-line"></div>
           </div>
-          <p className="pre-wrap masthead-subheading font-weight-light mb-0">
-            Physio Therapist, {doctorDetails.hospital}
-          </p>
         </div>
       </header>
 
-      {/* Patients Section */}
+      {/* Dashboard Section */}
       <section className="page-section portfolio" id="portfolio" style={{ backgroundColor: "#2c3e50", color: "#ffffff", backgroundColor: "#2c3e50 !important", color: "#ffffff !important" }}>
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading text-secondary mb-0 d-inline-block">
-              PATIENTS
+              Dashboard
             </h2>
           </div>
           <div className="divider-custom">
@@ -200,32 +242,64 @@ return (
             </div>
             <div className="divider-custom-line"></div>
           </div>
+          <p>Welcome to your personalized dashboard. Here you can track your progress, view assigned exercises, and communicate with your physiotherapist.</p>
           <div className="row justify-content-center">
-            {["John Doe", "Jane Smith", "Alice Brown", "Bob Johnson"].map(
-              (patient, index) => (
-                <div className="col-md-6 col-lg-3 mb-5" key={index}>
-                  <div className="portfolio-item mx-auto">
-                    <img
-                      className="img-fluid"
-                      src={person}
-                      alt={patient}
-                    />
-                    <h5 className="text-center mt-3">{patient}</h5>
-                    <p className="text-center text-muted">Condition</p>
-                  </div>
-                </div>
-              )
-            )}
+            <div className="col-md-6 col-lg-3 mb-5">
+              <div className="portfolio-item mx-auto">
+                <h5 className="text-center mt-3">Assigned Exercises</h5>
+                <p className="text-center text-muted">View and start your assigned exercises</p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate("/assigned-exercises")}
+                >
+                  Start Exercise
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Schedule Section */}
-      <section className="page-section bg-primary text-white mb-0" id="about">
+      {/* Physiotherapist Section */}
+        <section className="page-section bg-primary text-white mb-0" id="physiotherapist">
+        <div className="container-fluid">
+            <div className="text-center">
+            <h2 className="page-section-heading d-inline-block text-white">
+                Assigned Physiotherapist
+            </h2>
+            </div>
+            <div className="divider-custom divider-light">
+            <div className="divider-custom-line"></div>
+            <div className="divider-custom-icon">
+                <i className="fas fa-star"></i>
+            </div>
+            <div className="divider-custom-line"></div>
+            </div>
+            <p className="text-center font-weight-light mb-5">View the details of your assigned physiotherapist below.</p>
+            <div className="row justify-content-center">
+            <div className="col-lg-6">
+                <div className="card bg-dark text-white shadow">
+                <div className="card-body">
+                    <h5 className="card-title text-center">Physiotherapist Name</h5>
+                    <p className="card-text text-center">{therapistDetails.name}</p>
+                    <h5 className="card-title text-center">Contact</h5>
+                    <p className="card-text text-center">{therapistDetails.contact}</p>
+                    <h5 className="card-title text-center">Email</h5>
+                    <p className="card-text text-center">{therapistDetails.email}</p>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </section>
+
+
+      {/* Contact Section */}
+      <section className="page-section bg-dark text-white mb-0" id="contact">
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading d-inline-block text-white">
-              DOCTOR'S SCHEDULE
+              Contact
             </h2>
           </div>
           <div className="divider-custom divider-light">
@@ -235,35 +309,12 @@ return (
             </div>
             <div className="divider-custom-line"></div>
           </div>
-          <div className="row">
-            <div className="col-lg-6">
-              <h4 className="text-center text-uppercase">Morning Schedule</h4>
-              <ul className="list-unstyled lead">
-                <li>8:00 AM - Ward Rounds</li>
-                <li>9:30 AM - Outpatient Consultations</li>
-              </ul>
-            </div>
-            <div className="col-lg-6">
-              <h4 className="text-center text-uppercase">Afternoon Schedule</h4>
-              <ul className="list-unstyled lead">
-                <li>1:00 PM - Lunch Break</li>
-                <li>2:00 PM - Specialized Surgeries</li>
-              </ul>
-            </div>
-          </div>
+          <p className="text-center font-weight-light">Email: {patientDetails.email}</p>
+          <p className="text-center font-weight-light">Phone: {patientDetails.contact}</p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="footer text-center">
-        <div className="container-fluid" id="contact">
-          <h4>LOCATION</h4>
-          <p>2215 John Daniel Drive, Clark, MO 65243</p>
-          <p>Contact: physiofit@example.com | Phone: +1 (555) 555-5555</p>
-        </div>
-      </footer>
     </div>
   );
 };
 
-export default Physio;
+export default Patient;

@@ -8,13 +8,14 @@ import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-
 const Physio = () => {
   const navigate = useNavigate();
   const [doctorDetails, setDoctorDetails] = useState({
     name: "Loading...",
     hospital: "Loading...",
     address: "Loading...",
+    contact: "Loading...",
+    email: "Loading...",
   });
 
   useEffect(() => {
@@ -22,12 +23,16 @@ const Physio = () => {
     const physioName = sessionStorage.getItem("physioName");
     const hospitalName = sessionStorage.getItem("hospitalName");
     const hospitalAddress = sessionStorage.getItem("hospitalAddress");
+    const contactNo = sessionStorage.getItem("contactNo");
+    const emailID = sessionStorage.getItem("emailID");
 
     if (physioName && hospitalName && hospitalAddress) {
       setDoctorDetails({
         name: physioName,
         hospital: hospitalName,
         address: hospitalAddress,
+        contact: contactNo,
+        email: emailID,
       });
     } else {
       // If data is not found, redirect to login page
@@ -97,8 +102,7 @@ const Physio = () => {
       });
   };
 
-
-return (
+  return (
     <div>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
@@ -255,13 +259,32 @@ return (
       </section>
 
       {/* Footer */}
-      <footer className="footer text-center">
-        <div className="container-fluid" id="contact">
-          <h4>LOCATION</h4>
-          <p>2215 John Daniel Drive, Clark, MO 65243</p>
-          <p>Contact: physiofit@example.com | Phone: +1 (555) 555-5555</p>
+      <footer className="footer bg-secondary">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4 ml-auto">
+              <h4 className="text-uppercase mb-4">Contact</h4>
+              <ul className="list-unstyled">
+                <li>
+                  <i className="fas fa-phone-alt mr-2"></i>{doctorDetails.contact}
+                </li>
+                <li>
+                  <i className="fas fa-envelope mr-2"></i>{doctorDetails.email}
+                </li>
+              </ul>
+            </div>
+            <div className="col-lg-4 mr-auto">
+              <h4 className="text-uppercase mb-4">Location</h4>
+              <p>{doctorDetails.address}</p>
+            </div>  
+          </div>
         </div>
       </footer>
+
+      {/* Scroll to Top Button */}
+      <a className="scroll-to-top rounded js-scroll-trigger" href="#page-top">
+        <i className="fas fa-angle-up"></i>
+      </a>
     </div>
   );
 };
