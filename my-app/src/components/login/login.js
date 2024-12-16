@@ -27,20 +27,20 @@ function Login() {
       }
 
       const userRole = userDocSnap.data().usertype;
-
+      
       if (userRole === "Physiotherapist") {
         const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
         const hospitalName = userDocSnap.data().clinic; 
         const hospitalAddress = userDocSnap.data().hospitalAddress;
         const emailID = userDocSnap.data().email;
         const contactNo = userDocSnap.data().contact;
-
+        
         sessionStorage.setItem("physioName", physioName);
         sessionStorage.setItem("hospitalName", hospitalName);
         sessionStorage.setItem("hospitalAddress", hospitalAddress);
         sessionStorage.setItem("emailID", emailID);
         sessionStorage.setItem("contactNo", contactNo);
-
+        
         toast.success("Physiotherapist logged in successfully.", { position: "top-center" });
         navigate("/physiotherapist");
       } else if (userRole === "Patient") {
@@ -48,17 +48,30 @@ function Login() {
         const assignedTherapist = userDocSnap.data().assignedTherapist;
         const emailID = userDocSnap.data().email;
         const contactNo = userDocSnap.data().contact;
-
+        
         sessionStorage.setItem("patientName", patientName);
         sessionStorage.setItem("assignedTherapist", assignedTherapist);
         sessionStorage.setItem("emailID", emailID);
         sessionStorage.setItem("contactNo", contactNo);
+        
+        const docRef = doc(db, "Users", assignedTherapist);
+        const docSnap = await getDoc(docRef);
+
+        const physioName = `${docSnap.data().firstName} ${docSnap.data().lastName}`;
+        const contact = docSnap.data().contact; 
+        const email = docSnap.data().email;
+        
+        sessionStorage.setItem("physioName", physioName);
+        sessionStorage.setItem("physioContact", contact);
+        sessionStorage.setItem("physioEmail", email);
+
         console.log({
           assignedTherapist,
           contactNo,
           emailID,
           patientName
         });
+        toast.success("gotcha", { position: "bottom-center" });
 
         toast.success("Patient logged in successfully.", { position: "top-center" });
         navigate("/patient");

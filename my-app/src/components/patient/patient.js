@@ -7,6 +7,7 @@ import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import Login from "../login/login";
 
 
 const Physio = () => {
@@ -18,11 +19,11 @@ const Physio = () => {
   });
 
   useEffect(() => {
-    // Retrieve doctor's details from sessionStorage
+    // Retrieve patient's details from sessionStorage
     const physioName = sessionStorage.getItem("physioName");
     const hospitalName = sessionStorage.getItem("hospitalName");
     const hospitalAddress = sessionStorage.getItem("hospitalAddress");
-
+  
     if (physioName && hospitalName && hospitalAddress) {
       setDoctorDetails({
         name: physioName,
@@ -33,6 +34,10 @@ const Physio = () => {
       // If data is not found, redirect to login page
       navigate("/login");
     }
+  
+  //   // Additional logic remains unchanged
+  // }, [navigate]);
+  
 
     // jQuery Smooth Scrolling
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {

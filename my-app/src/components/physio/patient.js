@@ -16,61 +16,40 @@ const Patient = () => {
     contact: "Loading...",
     email: "Loading...",
   });
+
   const [therapistDetails, setTherapistDetails] = useState({
     name: "Loading...",
     contact: "Loading...",
-    email: "Loading...",
+    mail: "Loading...",
   });
 
   useEffect(() => {
     // Retrieve patient details from sessionStorage
-    const assignedTherapist = sessionStorage.getItem("assignedTherapist");
-    const contactNo = sessionStorage.getItem("contactNo");
-    const emailID = sessionStorage.getItem("emailID");
     const patientName = sessionStorage.getItem("patientName");
+    const contact = sessionStorage.getItem("contactNo");
+    const email = sessionStorage.getItem("emailID");
 
-    if (assignedTherapist && contactNo && emailID && patientName) {
+    //Doctor's details
+    const assignedTherapist = sessionStorage.getItem("physioName");
+    const contactNo = sessionStorage.getItem("physioContact");
+    const emailID = sessionStorage.getItem("physioEmail");
+
+    if (assignedTherapist && contactNo && emailID && patientName && contact && email) {
       setPatientDetails({
-        assignedTherapist,
-        contact: contactNo,
-        email: emailID,
+        contact: contact,
+        email: email,
         name: patientName,
+      });
+
+      setTherapistDetails({
+        name: assignedTherapist,
+        contact: contactNo,
+        mail: emailID,
       });
     } else {
       // If data is not found, redirect to login page
       navigate("/login");
     }
-// Fetch therapist details based on assignedTherapist ID
-fetch(`/api/therapists/${assignedTherapist}`) // Adjust the API endpoint according to your backend setup
-  .then((response) => {
-    if (!response.ok) {
-      // If the response status is not OK, throw an error
-      throw new Error('Failed to fetch therapist details');
-    }
-
-    // Check the content type of the response
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error('Response is not in JSON format');
-    }
-
-    // Parse JSON if the content type is application/json
-    return response.json();
-  })
-  .then((data) => {
-    setTherapistDetails({
-      name: data.name,
-      contact: data.contact,
-      email: data.email,
-    });
-  })
-  .catch((error) => {
-    console.error("Error fetching therapist details:", error.message);
-    // Optionally, display a user-friendly error message
-  });
-
-
-
 
     // jQuery Smooth Scrolling
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
@@ -285,7 +264,7 @@ fetch(`/api/therapists/${assignedTherapist}`) // Adjust the API endpoint accordi
                     <h5 className="card-title text-center">Contact</h5>
                     <p className="card-text text-center">{therapistDetails.contact}</p>
                     <h5 className="card-title text-center">Email</h5>
-                    <p className="card-text text-center">{therapistDetails.email}</p>
+                    <p className="card-text text-center">{therapistDetails.mail}</p>
                 </div>
                 </div>
             </div>
