@@ -250,7 +250,7 @@ fetch(`/api/therapists/${assignedTherapist}`) // Adjust the API endpoint accordi
                 <p className="text-center text-muted">View and start your assigned exercises</p>
                 <button
                   className="btn btn-primary"
-                  onClick={() => navigate("/assigned-exercises")}
+                  onClick={() => navigate("/exercises")}
                 >
                   Start Exercise
                 </button>

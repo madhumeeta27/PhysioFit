@@ -16,6 +16,8 @@ import SignUp from "./components/register";
 import Physio from "./components/physio/physio";
 import Patient from "./components/physio/patient";
 import Profile from "./components/profile";
+import Exercises from "./components/exercises/Exercises"; // Add Exercises page
+import StartExercise from "./components/exercises/StartExercise"; // Add StartExercise page
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "./components/firebase";
@@ -100,6 +102,14 @@ function App() {
           <Route
             path="/patient"
             element={user ? <Patient /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/exercises"
+            element={<Exercises />}
+          />
+          <Route
+            path="/start-exercise/:exercise"
+            element={<StartExercise />}
           />
         </Routes>
         <ToastContainer />
