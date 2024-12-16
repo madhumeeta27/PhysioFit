@@ -30,11 +30,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Clear authentication state on app load
     auth
       .signOut()
       .then(() => {
-        setUser(null); // Ensure no user is logged in
+        setUser(null);
       })
       .catch((error) => {
         console.error("Error clearing authentication state:", error);

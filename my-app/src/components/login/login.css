@@ -12,7 +12,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('Untitled design(2).png'); /* Corrected path */
+  background-image: url('Untitled design(2).png');
   background-size: cover;
   background-position: center;
 }
