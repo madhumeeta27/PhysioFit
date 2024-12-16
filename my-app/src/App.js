@@ -14,7 +14,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Login from "./components/login/login";
 import SignUp from "./components/register";
 import Physio from "./components/physio/physio";
-import Patient from "./components/physio/patient";
+import Patient from "./components/patient/patient";
 import Profile from "./components/profile";
 import Exercises from "./components/exercises/Exercises"; // Add Exercises page
 import StartExercise from "./components/exercises/StartExercise"; // Add StartExercise page

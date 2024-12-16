@@ -71,7 +71,6 @@ function Login() {
           emailID,
           patientName
         });
-        toast.success("gotcha", { position: "bottom-center" });
 
         toast.success("Patient logged in successfully.", { position: "top-center" });
         navigate("/patient");
