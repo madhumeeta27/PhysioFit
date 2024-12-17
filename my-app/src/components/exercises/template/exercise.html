@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysioFit</title>
+    <link rel="stylesheet" href="/src/components/exercises/static/exercise.css">
+</head>
+<body>
+    <div id="root">
+        <div class="App">
+            <header class="App-header">
+                <h2>Exercise Feedback for {{ exercise_number }}</h2>
+                <video id="video" width="640" height="480" controls autoplay></video>
+            </header>
+        </div>
+    </div>
+    <script>
+        const exerciseNumber = "{{ exercise_number }}";
+        const videoElement = document.getElementById('video');
+        videoElement.src = `http://127.0.0.1:5000/exercise/${exerciseNumber}`;
+    </script>
+</body>
+</html>

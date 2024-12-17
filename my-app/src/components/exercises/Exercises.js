@@ -26,7 +26,8 @@ const Exercises = () => {
   ];
 
   const handleExerciseClick = (exercise) => {
-    navigate(`/start-exercise/${exercise.id}`); // Pass exercise ID to StartExercise
+    // Open new tab with Flask app URL
+    window.open(`http://127.0.0.1:5000/exercise/${exercise.id}`, '_blank');
   };
 
   const handleHomeClick = () => {
