@@ -1,11 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa"; // Import home icon from react-icons
+import { FaHome } from "react-icons/fa";
 
 const Exercises = () => {
   const navigate = useNavigate();
 
-  // Exercise data
   const exercises = [
     { id: "01", name: "Bending the knee without support while sitting", position: "Seated", side: "Left", bodyPart: "Lower" },
     { id: "02", name: "Bending the knee with support while sitting", position: "Seated", side: "Left", bodyPart: "Lower" },
@@ -27,7 +26,7 @@ const Exercises = () => {
 
   const handleExerciseClick = (exercise) => {
     // Open new tab with Flask app URL
-    window.open(`http://127.0.0.1:5000/exercise/${exercise.id}`, '_blank');
+    window.open(`http://127.0.0.1:5000/exercise_feed/${exercise.id}`, '_blank');
   };
 
   const handleHomeClick = () => {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhysioFit</title>
-    <link rel="stylesheet" href="/src/components/exercises/static/exercise.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='static')}}">
 </head>
 <body>
     <div id="root">
@@ -18,7 +18,7 @@
     <script>
         const exerciseNumber = "{{ exercise_number }}";
         const videoElement = document.getElementById('video');
-        videoElement.src = `http://127.0.0.1:5000/exercise/${exerciseNumber}`;
+        videoElement.src = `http://127.0.0.1:5000/exercise_feed/${exerciseNumber}`;
     </script>
 </body>
 </html>

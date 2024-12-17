@@ -1,9 +1,7 @@
 import json
 import cv2
 import mediapipe as mp
-import time
 import sys
-import signal
 
 cap = None
 # Define a cleanup function to release resources

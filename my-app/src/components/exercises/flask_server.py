@@ -65,7 +65,7 @@ mp_drawing = mp.solutions.drawing_utils
 # Open webcam
 cap = cv2.VideoCapture(0)
 
-@app.route('/exercise/<exercise_number>')
+@app.route('/exercise_feed/<exercise_number>')
 def video_feed(exercise_number):
     try:
         # Print the received exercise number to debug
