@@ -4,16 +4,21 @@ import mediapipe as mp
 import sys
 
 cap = None
+video_cap = None
+
 # Define a cleanup function to release resources
 def cleanup_and_exit(signum=None, frame=None):
     print("Cleaning up resources...")
-    cap.release()
+    if cap:
+        cap.release()
+    if video_cap:
+        video_cap.release()
     cv2.destroyAllWindows()
     sys.exit(0)
 
 # Load the dataset
 try:
-    with open("C:/Users/MANOHAR/Downloads/dtl/PhysioFit/my-app/src/components/exercises/filtered_dataset.json", "r") as f:
+    with open("filtered_dataset.json", "r") as f:
         data = json.load(f)
 except FileNotFoundError:
     raise FileNotFoundError("The dataset file 'filtered_dataset.json' was not found!")
@@ -58,6 +63,8 @@ def calculate_deviation(detected_joints, reference_joints):
 
 # Generate frames for streaming
 def generate_frames(exercise_number):
+    global cap, video_cap
+
     # Validate the exercise number
     valid_exercises = [f"{i:02}" for i in range(1, 17) if i not in [10, 11]]
     if exercise_number not in valid_exercises:
@@ -97,11 +104,21 @@ def generate_frames(exercise_number):
     if not cap.isOpened():
         raise RuntimeError("Cannot access the webcam. Make sure it is connected and not being used by another application.")
 
+    # Load the exercise video
+    video_file = f"{exercise_number}.mp4"
+    video_cap = cv2.VideoCapture(video_file)
+    if not video_cap.isOpened():
+        raise FileNotFoundError(f"The exercise video '{video_file}' was not found!")
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
+
+        ret_video, video_frame = video_cap.read()
+        if not ret_video:
+            video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Restart video
+            ret_video, video_frame = video_cap.read()
 
         frame_height, frame_width, _ = frame.shape
         DEVIATION_THRESHOLD = 0.1 * frame_width  # Adjust threshold as needed
@@ -133,8 +150,14 @@ def generate_frames(exercise_number):
             # Draw the landmarks on the frame
             mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
+        # Resize the video frame
+        video_frame_resized = cv2.resize(video_frame, (frame.shape[1] // 2, frame.shape[0]))
+
+        # Combine the video frame and the webcam feed side-by-side
+        combined_frame = cv2.hconcat([video_frame_resized, frame])
+
         # Encode frame for streaming
-        _, buffer = cv2.imencode('.jpg', frame)
+        _, buffer = cv2.imencode('.jpg', combined_frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
 
