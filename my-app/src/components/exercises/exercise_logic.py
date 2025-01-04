@@ -2,9 +2,11 @@ import json
 import cv2
 import mediapipe as mp
 import sys
+import time
 
 cap = None
 video_cap = None
+should_stop = False
 
 # Define a cleanup function to release resources
 def cleanup_and_exit(signum=None, frame=None):
@@ -61,9 +63,16 @@ def calculate_deviation(detected_joints, reference_joints):
         )
     return deviations, directions
 
+# Add this new function
+def stop_exercise():
+    global should_stop
+    should_stop = True
+    cleanup_and_exit()
+
 # Generate frames for streaming
 def generate_frames(exercise_number):
-    global cap, video_cap
+    global cap, video_cap, should_stop
+    should_stop = False
 
     # Validate the exercise number
     valid_exercises = [f"{i:02}" for i in range(1, 17) if i not in [10, 11]]
@@ -110,18 +119,21 @@ def generate_frames(exercise_number):
     if not video_cap.isOpened():
         raise FileNotFoundError(f"The exercise video '{video_file}' was not found!")
 
-    while cap.isOpened():
+    exercise_started = False
+    start_time = None
+    
+    while cap.isOpened() and not should_stop:
         ret, frame = cap.read()
         if not ret:
             break
 
         ret_video, video_frame = video_cap.read()
         if not ret_video:
-            video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Restart video
+            video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             ret_video, video_frame = video_cap.read()
 
         frame_height, frame_width, _ = frame.shape
-        DEVIATION_THRESHOLD = 0.1 * frame_width  # Adjust threshold as needed
+        DEVIATION_THRESHOLD = 0.1 * frame_width
 
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = pose.process(rgb_frame)
@@ -143,20 +155,46 @@ def generate_frames(exercise_number):
                 if deviations[joint] > DEVIATION_THRESHOLD
             ]
 
+            # Add exercise started logic
+            if not exercise_started and not feedback_messages:
+                exercise_started = True
+                start_time = time.time()
+
+            if exercise_started:
+                cv2.putText(frame, "Exercise Started!", (10, 50), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
             # Add feedback messages to the frame
             for i, message in enumerate(feedback_messages):
-                cv2.putText(frame, message, (10, 30 + (i * 30)), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
+                cv2.putText(frame, message, (10, 100 + (i * 30)), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
 
-            # Draw the landmarks on the frame
+            # Check if exercise is completed
+            exercise_completed = all(deviation <= DEVIATION_THRESHOLD 
+                                  for deviation in deviations.values())
+            if exercise_completed:
+                cv2.putText(frame, "Exercise is Correct!", (10, 200), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
+            # Draw landmarks
             mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
-        # Resize the video frame
+        # Add timer display
+        if start_time is not None:
+            elapsed_time = time.time() - start_time
+            minutes = int(elapsed_time // 60)
+            seconds = int(elapsed_time % 60)
+            time_str = f"{minutes:02}:{seconds:02}"
+            
+            text_size = cv2.getTextSize(time_str, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2)[0]
+            text_x = (frame_width - text_size[0]) // 2
+            cv2.putText(frame, f"Time: {time_str}", (text_x, 30), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
+
+        # Combine frames and encode
         video_frame_resized = cv2.resize(video_frame, (frame.shape[1] // 2, frame.shape[0]))
-
-        # Combine the video frame and the webcam feed side-by-side
         combined_frame = cv2.hconcat([video_frame_resized, frame])
-
-        # Encode frame for streaming
+        
         _, buffer = cv2.imencode('.jpg', combined_frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')

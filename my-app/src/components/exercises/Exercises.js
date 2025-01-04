@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
+import Navbar from "../shared/Navbar";
 
 const Exercises = () => {
   const navigate = useNavigate();
@@ -25,45 +26,54 @@ const Exercises = () => {
   ];
 
   const handleExerciseClick = (exercise) => {
-    // Open new tab with Flask app URL
-    window.open(`http://127.0.0.1:5000/exercise_feed/${exercise.id}`, '_blank');
+    window.open(`http://127.0.0.1:5000/exercise/${exercise.id}`, '_blank');
   };
 
-  const handleHomeClick = () => {
-    navigate("/patient"); // Navigate to Patient component
+  const handleLogout = () => {
+    navigate("/login");
   };
+
+  const navItems = [
+    { type: 'scroll', to: '#portfolio', text: 'Dashboard' },
+    { type: 'scroll', to: '#dashboard', text: 'Start Exercise' },
+    { type: 'scroll', to: '#physiotherapist', text: 'Physiotherapist' },
+    { type: 'scroll', to: '#contact', text: 'Contact' },
+  ];
 
   return (
-    <div>
-      {/* Navbar */}
-      <nav className="navbar bg-secondary d-flex justify-content-between px-4">
-        <h1 className="navbar-brand text-white">PhysioFit</h1>
-        <button className="btn btn-outline-primary" onClick={handleHomeClick}>
-          <FaHome className="me-2" /> Home
-        </button>
-      </nav>
+    <div style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <Navbar handleLogout={handleLogout} navItems={navItems} />
 
       {/* Exercise List */}
-      <div className="container mt-4">
-        <h1>Select an Exercise</h1>
-        <ul className="list-group">
+      <div className="container" style={{ paddingTop: "100px" }}>
+        <h1 className="text-center mb-4" style={{ color: '#2c3e50', fontWeight: '600' }}>
+          Select an Exercise
+        </h1>
+        <div className="row">
           {exercises.map((exercise, index) => (
-            <li key={exercise.id} className="list-group-item">
-              <button
-                className="btn btn-primary w-25 mb-2"
-                onClick={() => handleExerciseClick(exercise)}
-              >
-                Exercise {index + 1}
-              </button>
-              <p>
-                <strong>Description:</strong> {exercise.name} <br />
-                <strong>Position:</strong> {exercise.position} <br />
-                <strong>Side:</strong> {exercise.side} <br />
-                <strong>Body Part:</strong> {exercise.bodyPart}
-              </p>
-            </li>
+            <div key={exercise.id} className="col-md-6 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title text-primary mb-3">Exercise {index + 1}</h5>
+                  <div className="card-text">
+                    <p className="mb-3"><strong>Description:</strong> {exercise.name}</p>
+                    <p className="mb-3">
+                      <span className="badge bg-info me-2">Position: {exercise.position}</span>
+                      <span className="badge bg-success me-2">Side: {exercise.side}</span>
+                      <span className="badge bg-warning">Body Part: {exercise.bodyPart}</span>
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-primary w-100"
+                    onClick={() => handleExerciseClick(exercise)}
+                  >
+                    Start Exercise
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,8 @@ import "./styles/styles.css";
 import avatar from "./assets/img/avatar.svg";
 import $ from "jquery";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import Navbar from '../shared/Navbar';
 
 const Patient = () => {
   const navigate = useNavigate();
@@ -22,6 +23,13 @@ const Patient = () => {
     contact: "Loading...",
     mail: "Loading...",
   });
+
+  const navItems = [
+    { type: 'scroll', to: '#portfolio', text: 'Dashboard' },
+    { type: 'link', to: '/exercises', text: 'Start Exercise' },
+    { type: 'scroll', to: '#physiotherapist', text: 'Physiotherapist' },
+    { type: 'scroll', to: '#contact', text: 'Contact' },
+  ];
 
   useEffect(() => {
     // Retrieve patient details from sessionStorage
@@ -116,70 +124,7 @@ const Patient = () => {
 
   return (
     <div>
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-        <div className="container-fluid">
-          <a className="navbar-brand js-scroll-trigger" href="#page-top">
-            PhysioFit
-          </a>
-          <button
-            className="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarResponsive"
-            aria-controls="navbarResponsive"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            Menu <i className="fas fa-bars"></i>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarResponsive">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#portfolio"
-                >
-                  Dashboard
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#dashboard"
-                >
-                  Start Exercise
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#physiotherapist"
-                >
-                  Physiotherapist
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#contact"
-                >
-                  Contact
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <button
-                  className="btn btn-outline-light nav-link py-3 px-0 px-lg-3 rounded"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar handleLogout={handleLogout} navItems={navItems} />
       {/* Header */}
       <header className="masthead container-fluid bg-primary text-white text-center">
         <div className="d-flex align-items-center flex-column">

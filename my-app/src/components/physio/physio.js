@@ -7,6 +7,7 @@ import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import Navbar from '../shared/Navbar';
 
 
 const Physio = () => {
@@ -18,6 +19,12 @@ const Physio = () => {
     contact: "Loading...",
     email: "Loading...",
   });
+
+  const navItems = [
+    { type: 'scroll', to: '#portfolio', text: 'PATIENTS' },
+    { type: 'scroll', to: '#about', text: 'SCHEDULE' },
+    { type: 'scroll', to: '#contact', text: 'CONTACT' },
+  ];
 
   useEffect(() => {
     // Retrieve doctor's details from sessionStorage
@@ -106,61 +113,7 @@ const Physio = () => {
 
 return (
     <div>
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-        <div className="container-fluid">
-          <a className="navbar-brand js-scroll-trigger" href="#page-top">
-            PhysioFit
-          </a>
-          <button
-            className="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarResponsive"
-            aria-controls="navbarResponsive"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            Menu <i className="fas fa-bars"></i>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarResponsive">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#portfolio"
-                >
-                  PATIENTS
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#about"
-                >
-                  SCHEDULE
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                  href="#contact"
-                >
-                  CONTACT
-                </a>
-              </li>
-              <li className="nav-item mx-0 mx-lg-1">
-                <button
-                  className="btn btn-outline-light nav-link py-3 px-0 px-lg-3 rounded"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Navbar handleLogout={handleLogout} navItems={navItems} />
 
       {/* Header */}
       <header className="masthead container-fluid bg-primary text-white text-center">
