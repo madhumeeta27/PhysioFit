@@ -21,17 +21,50 @@ function Register() {
   // Fetch physiotherapists from Firestore
   useEffect(() => {
     const fetchTherapists = async () => {
-      const q = query(collection(db, "Users"), where("usertype", "==", "Physiotherapist"));
-      const querySnapshot = await getDocs(q);
-      const therapistList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setTherapists(therapistList);
+      if (utype === "Patient") {
+        try {
+          console.log("Attempting to fetch therapists...");
+          
+          // First, check if we can access the collection
+          const usersRef = collection(db, "Users");
+          console.log("Collection reference created");
+          
+          const q = query(usersRef, where("usertype", "==", "Physiotherapist"));
+          console.log("Query created");
+          
+          const querySnapshot = await getDocs(q);
+          console.log("Query executed, documents found:", querySnapshot.size);
+          
+          if (querySnapshot.empty) {
+            console.log("No therapists found in the database");
+            setTherapists([]);
+            return;
+          }
+          
+          const therapistList = querySnapshot.docs.map((doc) => {
+            console.log("Processing therapist:", doc.id);
+            return {
+              id: doc.id,
+              ...doc.data()
+            };
+          });
+          
+          console.log("Final therapist list:", therapistList);
+          setTherapists(therapistList);
+          
+        } catch (error) {
+          console.error("Detailed error:", {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+          });
+          toast.error("Could not load therapists. Please try again later.");
+        }
+      }
     };
     
     fetchTherapists();
-  }, []);
+  }, [utype]);
   
     const handleRegister = async (e) => {
     e.preventDefault();
