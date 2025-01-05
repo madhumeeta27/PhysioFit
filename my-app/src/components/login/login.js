@@ -29,12 +29,13 @@ function Login() {
       const userRole = userDocSnap.data().usertype;
       
       if (userRole === "Physiotherapist") {
+        const physioUID = user.uid;
         const physioName = `${userDocSnap.data().firstName} ${userDocSnap.data().lastName}`;
         const hospitalName = userDocSnap.data().clinic; 
         const hospitalAddress = userDocSnap.data().hospitalAddress;
         const emailID = userDocSnap.data().email;
         const contactNo = userDocSnap.data().contact;
-        
+        sessionStorage.setItem("physioUID", physioUID);
         sessionStorage.setItem("physioName", physioName);
         sessionStorage.setItem("hospitalName", hospitalName);
         sessionStorage.setItem("hospitalAddress", hospitalAddress);

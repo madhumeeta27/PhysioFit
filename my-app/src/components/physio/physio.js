@@ -6,8 +6,12 @@ import avatar from "./assets/img/avatar.svg";
 import person from "./assets/img/person.png";
 import $ from "jquery";
 import { auth } from "../firebase";
+import { db } from "../firebase"; // Import Firestore instance
+import { query, collection, where, getDocs } from "firebase/firestore"; // Import Firestore functions
 import { useNavigate } from "react-router-dom";
-import Navbar from '../shared/Navbar';
+import Navbar from "../shared/Navbar";
+
+
 
 
 const Physio = () => {
@@ -19,7 +23,7 @@ const Physio = () => {
     contact: "Loading...",
     email: "Loading...",
   });
-
+  const [patients, setPatients] = useState([]);
   const navItems = [
     { type: 'scroll', to: '#portfolio', text: 'PATIENTS' },
     { type: 'scroll', to: '#about', text: 'SCHEDULE' },
@@ -28,13 +32,14 @@ const Physio = () => {
 
   useEffect(() => {
     // Retrieve doctor's details from sessionStorage
+    const physioUID = sessionStorage.getItem("physioUID");
     const physioName = sessionStorage.getItem("physioName");
     const hospitalName = sessionStorage.getItem("hospitalName");
     const hospitalAddress = sessionStorage.getItem("hospitalAddress");
     const contactNo = sessionStorage.getItem("contactNo");
     const emailID = sessionStorage.getItem("emailID");
 
-    if (physioName && hospitalName && hospitalAddress) {
+    if (physioUID && physioName && hospitalName && hospitalAddress) {
       setDoctorDetails({
         name: physioName,
         hospital: hospitalName,
@@ -42,6 +47,7 @@ const Physio = () => {
         contact: contactNo,
         email: emailID,
       });
+      fetchPatients(physioUID);
     } else {
       // If data is not found, redirect to login page
       navigate("/login");
@@ -98,6 +104,23 @@ const Physio = () => {
     };
   }, [navigate]);
 
+  const fetchPatients = async (physioUID) => {
+    try {
+      const q = query(
+        collection(db, "Users"),
+        where("assignedTherapist", "==", physioUID) // Query patients assigned to this doctor
+      );
+      const querySnapshot = await getDocs(q);
+      const patientList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPatients(patientList); // Store patients in state
+    } catch (error) {
+      console.error("Error fetching patients:", error);
+    }
+  };
+
   const handleLogout = () => {
     auth
       .signOut()
@@ -145,7 +168,7 @@ return (
       </header>
 
       {/* Patients Section */}
-      <section className="page-section portfolio" id="portfolio" style={{ backgroundColor: "#2c3e50", color: "#ffffff", backgroundColor: "#2c3e50 !important", color: "#ffffff !important" }}>
+      <section className="page-section portfolio" id="portfolio" style={{ backgroundColor: "#2c3e50", color: "#ffffff" }}>
         <div className="container-fluid">
           <div className="text-center">
             <h2 className="page-section-heading text-secondary mb-0 d-inline-block">
@@ -160,21 +183,21 @@ return (
             <div className="divider-custom-line"></div>
           </div>
           <div className="row justify-content-center">
-            {["John Doe", "Jane Smith", "Alice Brown", "Bob Johnson"].map(
-              (patient, index) => (
-                <div className="col-md-6 col-lg-3 mb-5" key={index}>
-                  <div className="portfolio-item mx-auto">
-                    <img
-                      className="img-fluid"
-                      src={person}
-                      alt={patient}
-                    />
-                    <h5 className="text-center mt-3">{patient}</h5>
-                    <p className="text-center text-muted">Condition</p>
-                  </div>
+            {patients.map((patient) => (
+              <div className="col-md-6 col-lg-3 mb-5" key={patient.id}>
+                <div className="portfolio-item mx-auto">
+                  <img
+                    className="img-fluid"
+                    src={person}
+                    alt={patient.firstName}
+                  />
+                  <h5 className="text-center mt-3">
+                    {patient.firstName} {patient.lastName}
+                  </h5>
+                  <p className="text-center text-muted">{patient.contact}</p>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
